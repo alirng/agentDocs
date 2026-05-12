@@ -20,6 +20,7 @@ export function validateAgentDoc(
       if (containsScript(node.value)) {
         diagnostics.push({
           severity: "error",
+          filePath: options.filePath,
           line: node.line,
           issue: "Executable <script> tags are not allowed in normal Markdown",
           fix: "Move custom JavaScript into an agd:artifact block"
@@ -42,6 +43,7 @@ function validateBlock(
   if (!allowedTypes.has(block.type)) {
     diagnostics.push({
       severity: options.strict ? "error" : "warning",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: `Unknown block type "${block.type}"`,
@@ -52,6 +54,7 @@ function validateBlock(
   if (block.type !== "artifact" && containsScript(block.content)) {
     diagnostics.push({
       severity: "error",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: "Executable <script> tags are only allowed inside artifact blocks",
@@ -59,32 +62,43 @@ function validateBlock(
     });
   }
 
-  if (block.type === "chart") validateChart(block, diagnostics);
+  validateRequiredMetadata(block, diagnostics, options);
+  if (block.type === "chart") validateChart(block, diagnostics, options);
   if (block.type === "table" || block.type === "timeline" || block.type === "comparison") {
-    validateTableBackedBlock(block, diagnostics);
+    validateTableBackedBlock(block, diagnostics, options);
   }
   if (block.type === "metric") validateMetric(block, diagnostics, options);
   if (block.type === "artifact") validateArtifact(block, diagnostics, options);
 }
 
-function validateChart(block: AgentDocsBlockNode, diagnostics: AgentDocsDiagnostic[]) {
+function validateChart(
+  block: AgentDocsBlockNode,
+  diagnostics: AgentDocsDiagnostic[],
+  options: ValidateAgentDocOptions
+) {
   const chartType = String(block.metadata["type"] ?? "");
   if (!chartTypes.has(chartType)) {
     diagnostics.push({
       severity: "error",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: "Chart block is missing a supported type",
       fix: "Add type=bar, type=line, type=area, or type=pie"
     });
   }
-  validateTableBackedBlock(block, diagnostics);
+  validateTableBackedBlock(block, diagnostics, options);
 }
 
-function validateTableBackedBlock(block: AgentDocsBlockNode, diagnostics: AgentDocsDiagnostic[]) {
+function validateTableBackedBlock(
+  block: AgentDocsBlockNode,
+  diagnostics: AgentDocsDiagnostic[],
+  options: ValidateAgentDocOptions
+) {
   if (!hasMarkdownTable(block.content)) {
     diagnostics.push({
-      severity: "warning",
+      severity: options.strict ? "error" : "warning",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: `${block.type} should contain a Markdown table for fallback readability`,
@@ -101,6 +115,7 @@ function validateMetric(
   if (block.metadata["label"] === undefined || block.metadata["value"] === undefined) {
     diagnostics.push({
       severity: options.strict ? "error" : "warning",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: "Metric block should include label and value metadata",
@@ -117,6 +132,7 @@ function validateArtifact(
   if (!/```html\s*[\s\S]*?```/.test(block.content)) {
     diagnostics.push({
       severity: "error",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: "Artifact block must contain a fenced html code block",
@@ -124,13 +140,36 @@ function validateArtifact(
     });
   }
 
-  if (options.strict && /https?:\/\//i.test(block.content)) {
+  if (options.strict && hasRemoteReference(block.content)) {
     diagnostics.push({
       severity: "error",
+      filePath: options.filePath,
       line: block.line,
       blockType: block.type,
       issue: "Remote network references are disallowed in strict artifact mode",
       fix: "Inline assets or remove remote references"
+    });
+  }
+}
+
+function validateRequiredMetadata(
+  block: AgentDocsBlockNode,
+  diagnostics: AgentDocsDiagnostic[],
+  options: ValidateAgentDocOptions
+) {
+  const requirements: Record<string, string[]> = {
+    artifact: ["name"],
+    doc: ["agentdocs-version"]
+  };
+  for (const key of requirements[block.type] ?? []) {
+    if (block.metadata[key] !== undefined) continue;
+    diagnostics.push({
+      severity: options.strict ? "error" : "warning",
+      filePath: options.filePath,
+      line: block.line,
+      blockType: block.type,
+      issue: `${block.type} block should include ${key} metadata`,
+      fix: `Add ${key}=... to the opening marker`
     });
   }
 }
@@ -145,4 +184,8 @@ function hasMarkdownTable(content: string): boolean {
 
 function containsScript(content: string): boolean {
   return /<script\b/i.test(content);
+}
+
+function hasRemoteReference(content: string): boolean {
+  return /\b(?:src|href)\s*=\s*["']https?:\/\//i.test(content) || /fetch\s*\(\s*["']https?:\/\//i.test(content);
 }

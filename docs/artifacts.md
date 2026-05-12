@@ -31,3 +31,9 @@ window.agentdocs.export("status: done\n");
 ```
 
 The renderer receives this with `postMessage` and displays the exported state in the rendered document.
+
+The parent document checks that the message came from the expected iframe before updating export output.
+
+## Copying Export State
+
+Rendered artifacts include a `Copy export` button. It copies the latest exported state from the artifact output panel when the browser exposes the Clipboard API.

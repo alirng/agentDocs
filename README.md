@@ -6,7 +6,7 @@ agentDocs is an open-source document format and toolchain for agent-authored pla
 
 ## MVP Status
 
-This repository is building the first local MVP:
+This repository has a local MVP:
 
 - `@agentdocs0/core` parses and validates agentDocs Markdown.
 - `@agentdocs0/renderer-html` renders self-contained HTML.
@@ -18,8 +18,8 @@ This repository is building the first local MVP:
 ```bash
 pnpm install
 pnpm build
-pnpm agentdocs validate examples/prd.agent.md
-pnpm agentdocs build examples/prd.agent.md --out dist/prd.html
+pnpm agentdocs validate "examples/*.agent.md" --strict
+pnpm agentdocs build "examples/*.agent.md" --out dist/examples
 ```
 
 ## Syntax
@@ -59,3 +59,16 @@ Use `artifact` only for bespoke interactive HTML mini-apps:
 
 - PRD: [docs/open_interactive_markdown_prd.md](docs/open_interactive_markdown_prd.md)
 - Authoring guide: [agentdocs.md](agentdocs.md)
+- CLI: [docs/cli.md](docs/cli.md)
+- Security: [docs/security.md](docs/security.md)
+
+## Development
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm build:examples
+pnpm pack:check
+```

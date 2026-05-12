@@ -21,6 +21,7 @@ export function parseAgentDoc(markdown: string, options: ParseAgentDocOptions = 
   let textBuffer: string[] = [];
   let textStartLine = 1;
   let index = 0;
+  let inFence = false;
   let version: string | undefined;
 
   const flushText = () => {
@@ -40,6 +41,19 @@ export function parseAgentDoc(markdown: string, options: ParseAgentDocOptions = 
   while (index < lines.length) {
     const line = lines[index] ?? "";
     const lineNumber = index + 1;
+    if (isFenceLine(line)) {
+      pushTextLine(line, lineNumber);
+      inFence = !inFence;
+      index += 1;
+      continue;
+    }
+
+    if (inFence) {
+      pushTextLine(line, lineNumber);
+      index += 1;
+      continue;
+    }
+
     const openMatch = line.match(openCommentPattern);
 
     if (openMatch) {
@@ -68,6 +82,7 @@ export function parseAgentDoc(markdown: string, options: ParseAgentDocOptions = 
       if (closingIndex === -1) {
         diagnostics.push({
           severity: "error",
+          filePath: options.filePath,
           line: lineNumber,
           blockType: rawType,
           issue: `Missing closing marker for agd:${rawType}`,
@@ -116,13 +131,20 @@ export function parseAgentDoc(markdown: string, options: ParseAgentDocOptions = 
     nodes,
     diagnostics
   };
-  ast.diagnostics.push(...validateAgentDoc(ast, { strict: options.strict }));
+  ast.diagnostics.push(...validateAgentDoc(ast, { filePath: options.filePath, strict: options.strict }));
   return ast;
 }
 
 function findClosingComment(lines: string[], startIndex: number, type: string): number {
+  let inFence = false;
   for (let index = startIndex; index < lines.length; index += 1) {
-    const closeMatch = (lines[index] ?? "").match(closeCommentPattern);
+    const line = lines[index] ?? "";
+    if (isFenceLine(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const closeMatch = line.match(closeCommentPattern);
     if (closeMatch?.[1] === type) return index;
   }
   return -1;
@@ -203,4 +225,8 @@ function normalizeBlockType(
 function stringifyMetadata(value: unknown): string | undefined {
   if (value === undefined) return undefined;
   return String(value);
+}
+
+function isFenceLine(line: string): boolean {
+  return /^\s*(```|~~~)/.test(line);
 }

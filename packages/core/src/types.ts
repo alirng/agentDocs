@@ -25,6 +25,7 @@ export type AgentDocsSeverity = "warning" | "error";
 
 export interface AgentDocsDiagnostic {
   severity: AgentDocsSeverity;
+  filePath?: string;
   line: number;
   blockType?: string;
   issue: string;
@@ -62,5 +63,6 @@ export interface ParseAgentDocOptions {
 }
 
 export interface ValidateAgentDocOptions {
+  filePath?: string;
   strict?: boolean;
 }

@@ -38,3 +38,12 @@ The parser emits:
 - block nodes for `agd:` comment blocks
 - block nodes for visible GitHub-alert syntax with `agentdocs:` metadata
 - diagnostics for invalid or unsafe content
+
+Diagnostics include:
+
+- severity
+- file path when supplied by the caller
+- line number
+- block type when applicable
+- issue
+- suggested fix

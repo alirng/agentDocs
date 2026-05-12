@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@agentdocs0/core": "workspace:*",
-    "@agentdocs0/renderer-html": "workspace:*"
+    "@agentdocs0/renderer-html": "workspace:*",
+    "tinyglobby": "^0.2.16"
   }
 }

@@ -24,3 +24,4 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: pnpm build:examples
+      - run: pnpm pack:check

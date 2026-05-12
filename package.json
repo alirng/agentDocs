@@ -20,6 +20,7 @@
     "build:examples": "node scripts/build-examples.mjs",
     "clean": "pnpm -r clean && rm -rf dist",
     "lint": "pnpm typecheck",
+    "pack:check": "node scripts/pack-check.mjs",
     "test": "vitest run",
     "typecheck": "tsc -b --pretty false"
   },

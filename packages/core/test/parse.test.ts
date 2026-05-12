@@ -67,6 +67,31 @@ Missing close`);
     });
   });
 
+  it("ignores markers inside fenced code blocks", () => {
+    const ast = parseAgentDoc(`\`\`\`md
+<!--agd:card title="Not a block"-->
+\`\`\`
+
+<!--agd:decision status=approved-->
+Actual block
+<!--/agd:decision-->`);
+
+    const blocks = ast.nodes.filter((node) => node.kind === "block");
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "decision" });
+  });
+
+  it("includes file paths in diagnostics", () => {
+    const ast = parseAgentDoc(`<!--agd:unknown-->
+Body
+<!--/agd:unknown-->`, { filePath: "example.agent.md", strict: true });
+
+    expect(ast.diagnostics[0]).toMatchObject({
+      filePath: "example.agent.md",
+      severity: "error"
+    });
+  });
+
   it("validates artifact html fences", () => {
     const ast = parseAgentDoc(`<!--agd:artifact name="demo"-->
 No fence

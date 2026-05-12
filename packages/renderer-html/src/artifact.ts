@@ -14,9 +14,10 @@ export function renderArtifact(block: AgentDocsBlockNode, index: number): string
 
   return `<section class="agentdocs-block agentdocs-artifact" id="${artifactId}">
     ${block.metadata["name"] ? `<p class="agentdocs-block-title">${escapeHtml(block.metadata["name"])}</p>` : ""}
-    <iframe class="agentdocs-artifact-frame" title="${escapeAttribute(block.metadata["name"] ?? "agentDocs artifact")}" sandbox="allow-scripts" height="${height}" srcdoc="${escapeAttribute(bridgedHtml)}"></iframe>
+    <iframe id="${artifactId}-frame" class="agentdocs-artifact-frame" title="${escapeAttribute(block.metadata["name"] ?? "agentDocs artifact")}" sandbox="allow-scripts" height="${height}" srcdoc="${escapeAttribute(bridgedHtml)}"></iframe>
     <details>
       <summary>Artifact export${exportTarget ? `: ${escapeHtml(exportTarget)}` : ""}</summary>
+      <button type="button" data-agentdocs-copy="${artifactId}">Copy export</button>
       <pre class="agentdocs-artifact-output" data-agentdocs-artifact-output="${artifactId}">${escapeHtml(extractExportFallback(block.content))}</pre>
     </details>
   </section>`;
@@ -27,8 +28,19 @@ export function artifactRuntimeScript(): string {
 window.addEventListener("message", function(event) {
   var data = event.data || {};
   if (data.source !== "agentdocs-artifact" || data.type !== "export") return;
+  var frame = document.getElementById(data.id + "-frame");
+  if (!frame || frame.contentWindow !== event.source) return;
   var output = document.querySelector('[data-agentdocs-artifact-output="' + data.id + '"]');
   if (output) output.textContent = String(data.content || "");
+});
+document.addEventListener("click", function(event) {
+  var target = event.target;
+  if (!target || !target.getAttribute) return;
+  var id = target.getAttribute("data-agentdocs-copy");
+  if (!id) return;
+  var output = document.querySelector('[data-agentdocs-artifact-output="' + id + '"]');
+  if (!output || !navigator.clipboard) return;
+  navigator.clipboard.writeText(output.textContent || "");
 });
 </script>`;
 }

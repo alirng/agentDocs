@@ -18,6 +18,14 @@ sandbox="allow-scripts"
 
 The renderer must not include `allow-same-origin` by default.
 
+The parent document only accepts artifact export messages from the matching iframe window. Artifact exports are displayed in the rendered document and can be copied by the reader.
+
+Artifacts should not depend on remote network access. In strict mode, remote `src=`, `href=`, and `fetch("https://...")` references are validation errors.
+
+## Markdown Pipeline
+
+The HTML renderer uses a Markdown/GFM pipeline with sanitization before stringifying HTML. This keeps ordinary Markdown rendering compatible with common Markdown features while avoiding raw script execution in standard document content.
+
 ## Strict Mode
 
 Strict mode should fail on:
