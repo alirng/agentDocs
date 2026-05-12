@@ -21,6 +21,7 @@
     "clean": "pnpm -r clean && rm -rf dist",
     "lint": "pnpm typecheck",
     "pack:check": "node scripts/pack-check.mjs",
+    "skill:check": "pnpm agentdocs validate \"skills/agentdocs/**/*.agent.md\" --strict",
     "test": "vitest run",
     "typecheck": "tsc -b --pretty false"
   },

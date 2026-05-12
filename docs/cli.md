@@ -14,6 +14,7 @@ When building multiple files, `--out` must be a directory.
 ```bash
 agentdocs validate examples/prd.agent.md
 agentdocs validate "examples/*.agent.md" --strict
+agentdocs validate "skills/agentdocs/**/*.agent.md" --strict
 ```
 
 Successful output:

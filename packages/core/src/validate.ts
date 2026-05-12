@@ -140,6 +140,17 @@ function validateArtifact(
     });
   }
 
+  if (!/window\.agentdocs\.export\s*\(/.test(block.content)) {
+    diagnostics.push({
+      severity: options.strict ? "error" : "warning",
+      filePath: options.filePath,
+      line: block.line,
+      blockType: block.type,
+      issue: "Artifact should call window.agentdocs.export(...) with durable state",
+      fix: "Call window.agentdocs.export(markdownOrYamlOrJson) from the artifact"
+    });
+  }
+
   if (options.strict && hasRemoteReference(block.content)) {
     diagnostics.push({
       severity: "error",

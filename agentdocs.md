@@ -9,7 +9,7 @@ Use this guide when writing `.agent.md` files for this repository.
 - Keep the document readable in GitHub without an agentDocs renderer.
 - Prefer short metadata and shallow blocks.
 - Do not use raw HTML outside `artifact` blocks.
-- Validate examples with `pnpm agentdocs validate <file>` once the CLI is available.
+- Validate examples with `pnpm agentdocs validate <file> --strict`.
 
 ## Invisible Block Syntax
 

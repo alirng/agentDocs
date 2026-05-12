@@ -103,6 +103,23 @@ No fence
     });
   });
 
+  it("requires artifact export in strict mode", () => {
+    const ast = parseAgentDoc(`<!--agd:artifact name="demo"-->
+\`\`\`html
+<!doctype html>
+<html><body>No export</body></html>
+\`\`\`
+<!--/agd:artifact-->`, { strict: true });
+
+    expect(ast.diagnostics).toContainEqual(
+      expect.objectContaining({
+        severity: "error",
+        blockType: "artifact",
+        issue: "Artifact should call window.agentdocs.export(...) with durable state"
+      })
+    );
+  });
+
   it("captures document version metadata", () => {
     const ast = parseAgentDoc(`<!--agd:doc agentdocs-version=0.1 title="Spec"-->
 

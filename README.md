@@ -12,6 +12,7 @@ This repository has a local MVP:
 - `@agentdocs0/renderer-html` renders self-contained HTML.
 - `@agentdocs0/cli` exposes `agentdocs` and `agd`.
 - `@agentdocs0/themes` provides default CSS.
+- `skills/agentdocs` teaches agents how to author and validate `.agent.md` files.
 
 ## Quickstart
 
@@ -20,6 +21,7 @@ pnpm install
 pnpm build
 pnpm agentdocs validate "examples/*.agent.md" --strict
 pnpm agentdocs build "examples/*.agent.md" --out dist/examples
+pnpm skill:check
 ```
 
 ## Syntax
@@ -61,6 +63,7 @@ Use `artifact` only for bespoke interactive HTML mini-apps:
 - Authoring guide: [agentdocs.md](agentdocs.md)
 - CLI: [docs/cli.md](docs/cli.md)
 - Security: [docs/security.md](docs/security.md)
+- Skill: [docs/skill.md](docs/skill.md)
 
 ## Development
 
@@ -70,5 +73,6 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm build:examples
+pnpm skill:check
 pnpm pack:check
 ```
