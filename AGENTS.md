@@ -4,22 +4,30 @@
 
 ### Repository status
 
-This repository ("agentDocs — Markdown-compatible rich documents for AI agents and humans") is a newly initialized project with no source code yet. It contains only `README.md`, `.gitignore`, and `LICENSE`.
+This repository ("agentDocs — Markdown-compatible rich documents for AI agents and humans") is a TypeScript/pnpm monorepo for the agentDocs MVP.
 
 ### Intended stack
 
-The `.gitignore` covers Node.js, TypeScript, and several frameworks (Next.js, Nuxt, Vite, SvelteKit, Docusaurus, Gatsby). The actual framework has not been chosen yet.
+- Node.js 22
+- pnpm workspaces
+- TypeScript
+- Vitest
 
 ### Environment
 
 - Node.js is available (v22.x via nvm).
-- No `package.json` or lockfile exists, so there are no dependencies to install.
-- There are no lint, test, build, or run commands available until source code is added.
+- Use pnpm for dependency installation and scripts.
+- The tracked PRD is `docs/open_interactive_markdown_prd.md`.
+- The agentDocs authoring guide is `agentdocs.md`.
 
-### When code is added
+### Commands
 
-Once source code and a `package.json` are committed, future agents should:
+Use the package scripts in `package.json`:
 
-1. Install dependencies using the package manager matching the lockfile (`package-lock.json` → npm, `yarn.lock` → yarn, `pnpm-lock.yaml` → pnpm).
-2. Check `package.json` scripts for `dev`, `lint`, `test`, and `build` commands.
-3. Update the VM environment update script accordingly.
+1. `pnpm install`
+2. `pnpm build`
+3. `pnpm test`
+4. `pnpm typecheck`
+5. `pnpm lint`
+
+When writing `.agent.md` documents, follow `agentdocs.md`.

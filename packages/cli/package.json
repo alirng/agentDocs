@@ -1,0 +1,37 @@
+{
+  "name": "@agentdocs0/cli",
+  "version": "0.1.0",
+  "description": "CLI for validating and rendering agentDocs Markdown.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "agentdocs": "./dist/index.js",
+    "agd": "./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alirng/agentDocs.git",
+    "directory": "packages/cli"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/make-bin-executable.mjs",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@agentdocs0/core": "workspace:*",
+    "@agentdocs0/renderer-html": "workspace:*"
+  }
+}

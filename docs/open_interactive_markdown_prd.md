@@ -22,7 +22,7 @@ The agent terminology is the wedge and the wedge is the product. "Agent" describ
 | CLI alias | `agd` |
 | npm publisher | `alirng0` |
 | npm scope | `@agentdocs0/*` |
-| GitHub repo | `github.com/alirng0/agentdocs` |
+| GitHub repo | `github.com/alirng/agentDocs` |
 | Default block prefix | `agd:` |
 | Visible block metadata key | `agentdocs:` |
 | Authoring guide | `agentdocs.md` |
@@ -1281,7 +1281,7 @@ Apache 2.0 remains an option if patent language becomes important.
 Initial repo:
 
 ```txt
-github.com/alirng0/agentdocs
+github.com/alirng/agentDocs
 ```
 
 The repo should be a monorepo so examples, packages, docs, and the agent skill evolve together.
